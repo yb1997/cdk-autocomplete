@@ -1,7 +1,6 @@
 import { CdkOverlayOrigin } from "@angular/cdk/overlay";
 import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   Input,
@@ -9,7 +8,7 @@ import {
   OnInit,
   SimpleChange,
   SimpleChanges,
-  ViewChild,
+  ViewChild
 } from "@angular/core";
 
 @Component({
@@ -45,9 +44,16 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
   dropdownWidth: number;
   currentIndex = -1;
   displayList = [];
+  private resizeObserver = new ResizeObserver((entries) => {
+    const newWidth = entries[0].borderBoxSize[0].inlineSize;
+    if (newWidth !== this.dropdownWidth) {
+      this.dropdownWidth = newWidth;
+    }
+  });
 
   ngOnInit() {
     this.dropdownWidth = this.overlayOrigin.getBoundingClientRect().width;
+    this.resizeObserver.observe(this.overlayOrigin);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -64,9 +70,9 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
     }
   }
 
-  // ngDoCheck() {
-  //   console.log("ng do check fired");
-  // }
+  ngOnDestroy() {
+    this.resizeObserver.disconnect();
+  }
 
   get textbox() {
     return this.textboxRef.nativeElement;
