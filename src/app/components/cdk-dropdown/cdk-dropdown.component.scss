@@ -2,26 +2,47 @@
   position: relative;
   display: flex;
   align-items: center;
+  flex-direction: row;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: white;
 
-  input {
-    padding: 0.7em 1.2em;
-    padding-right: 2em;
-    border-radius: 4px;
-    font-size: 1.2rem;
-    outline: none;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
-    border: none;
+  .textbox-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
 
-    &:focus {
-      background-color: darken(white, 2%);
+    input {
+      font-size: 1.2rem;
+      padding: 0.7em 1.2em;
+      outline: none;
+      border: none;
+    }
+
+    .clear-icon-container {
+      position: absolute;
+      right: 0.5em;
+      cursor: pointer;
     }
   }
 
-  .clear-icon-container {
-    position: absolute;
-    right: 1em;
-    cursor: pointer;
+
+  .actions-container {
+    padding: 0 0.4em;
+
+    .down-icon-container {
+      padding: 0 0.2em;
+      cursor: pointer;
+      transition: transform 0.4s;
+
+      &.rotate {
+        transform: rotate(180deg);
+      }
+    }
   }
+
+
 
 }
 

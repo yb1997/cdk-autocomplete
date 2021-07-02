@@ -1,13 +1,24 @@
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
+import { CdkOverlayOrigin } from "@angular/cdk/overlay";
+import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChange,
+  SimpleChanges,
+  ViewChild,
+} from "@angular/core";
 
 @Component({
-  selector: 'cdk-dropdown',
-  templateUrl: './cdk-dropdown.component.html',
-  styleUrls: ["./cdk-dropdown.component.scss"]
+  selector: "cdk-dropdown",
+  templateUrl: "./cdk-dropdown.component.html",
+  styleUrls: ["./cdk-dropdown.component.scss"],
 })
 export class CdkDropdownComponent implements OnInit, OnChanges {
-  constructor() { }
+  constructor() {}
 
   @Input()
   items: any[];
@@ -24,6 +35,9 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
   @ViewChild("textbox", { static: true })
   textboxRef: ElementRef<HTMLInputElement>;
 
+  @ViewChild(CdkOverlayOrigin, { static: true })
+  overlayOriginRef: CdkOverlayOrigin;
+
   @ViewChild(CdkVirtualScrollViewport)
   scrollViewport: CdkVirtualScrollViewport;
 
@@ -33,13 +47,10 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
   displayList = [];
 
   ngOnInit() {
-    console.log("ngOnInit fired");
-    this.dropdownWidth = this.textbox.getBoundingClientRect().width;
-    console.log(this.displayList);
+    this.dropdownWidth = this.overlayOrigin.getBoundingClientRect().width;
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log("ngOnChanges called");
     for (let prop in changes) {
       const propChange = changes[prop] as SimpleChange;
 
@@ -61,8 +72,20 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
     return this.textboxRef.nativeElement;
   }
 
-  handleDropdownFocus(e: Event) {
+  get overlayOrigin() {
+    return this.overlayOriginRef.elementRef.nativeElement as HTMLElement;
+  }
+
+  toggleDropdown() {
+    this.isOpen = !this.isOpen;
+  }
+
+  openDropdown() {
     this.isOpen = true;
+  }
+
+  handleDropdownFocus(e: Event) {
+    this.openDropdown();
   }
 
   handleDropdownBlur(e: Event) {
@@ -86,7 +109,7 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
 
   handleDropdownOptionsVisible() {
     if (this.currentIndex !== -1) {
-      setTimeout(_ => {
+      setTimeout((_) => {
         this.scrollViewport.scrollToIndex(this.currentIndex);
       });
     }
@@ -97,7 +120,7 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
     this.clearTextBox();
     this.clearSelection();
     this.resetDisplayList();
-    this.isOpen = true;
+    this.openDropdown();
   }
 
   clearSelection() {
@@ -108,9 +131,5 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
     this.textbox.value = "";
   }
 
-  resetDisplayList() {
-
-  }
-
-
+  resetDisplayList() {}
 }

@@ -1,14 +1,26 @@
-<div class="textbox-container">
-  <input
-    #textbox
-    type="text"
-    cdkOverlayOrigin
-    #trigger="cdkOverlayOrigin"
-    (focus)="handleDropdownFocus($event)"
-    (blur)="handleDropdownBlur($event)"
-    [placeholder]="placeholder"
-  />
-  <div *ngIf="currentIndex !== -1" (click)="handleClearIconClick($event)" class="clear-icon-container">&#x2a2f;</div>
+<div class="textbox-container" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+  <div class="textbox-wrapper">
+    <input
+      id="dropdown-textbox"
+      #textbox
+      type="text"
+      (focus)="handleDropdownFocus($event)"
+      (blur)="handleDropdownBlur($event)"
+      [placeholder]="placeholder"
+    />
+    <div
+      *ngIf="currentIndex !== -1"
+      (click)="handleClearIconClick($event)"
+      class="clear-icon-container"
+    >
+      &#x2a2f;
+    </div>
+  </div>
+  <div class="actions-container">
+    <div [class.rotate]="isOpen" (click)="toggleDropdown()" class="down-icon-container">
+      <i class="fas fa-caret-down"></i>
+    </div>
+  </div>
 </div>
 
 <ng-template
