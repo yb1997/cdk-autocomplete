@@ -10,6 +10,8 @@ import {
   SimpleChanges,
   ViewChild
 } from "@angular/core";
+import { fromEvent } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 
 @Component({
   selector: "cdk-dropdown",
@@ -42,7 +44,7 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
 
   isOpen = false;
   dropdownWidth: number;
-  currentIndex = -1;
+  selectedItem = null;
   displayList = [];
   private resizeObserver = new ResizeObserver((entries) => {
     const newWidth = entries[0].borderBoxSize[0].inlineSize;
@@ -54,6 +56,22 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.dropdownWidth = this.overlayOrigin.getBoundingClientRect().width;
     this.resizeObserver.observe(this.overlayOrigin);
+
+    fromEvent(this.textbox, "input").pipe(
+      debounceTime(200)
+    ).subscribe({
+      next: (e: KeyboardEvent) => {
+        const inputText = this.textbox.value.toUpperCase();
+
+        if (inputText === "") {
+          this.resetDisplayList();
+        } else {
+          this.displayList = this.items.filter(
+            item => (item[this.dataKey] as string).toUpperCase().includes(inputText)
+          );
+        }
+      }
+    })
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -92,31 +110,33 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
 
   handleDropdownFocus(e: Event) {
     this.openDropdown();
+    this.textbox.select();
   }
 
   handleDropdownBlur(e: Event) {
     //this.isOpen = false;
   }
 
-  handleItemClick(e: MouseEvent, currentItem: any, index: number) {
+  handleItemClick(e: MouseEvent, currentItem: any) {
     this.textbox.value = currentItem[this.dataKey];
-    this.currentIndex = index;
+    this.selectedItem = currentItem;
     this.isOpen = false;
   }
 
   handleOverlayOutsideClick(e) {
-    console.log("overlay outside clicked", e);
+    //console.log("overlay outside clicked", e);
     //this.isOpen = false;
   }
 
   handleOverlayKeydown(e) {
-    console.log("overlay keydown", e);
+    //console.log("overlay keydown", e);
   }
 
   handleDropdownOptionsVisible() {
-    if (this.currentIndex !== -1) {
+    if (this.selectedItem) {
       setTimeout((_) => {
-        this.scrollViewport.scrollToIndex(this.currentIndex);
+        const currentIndex = this.displayList.indexOf(this.selectedItem);
+        this.scrollViewport.scrollToIndex(currentIndex);
       });
     }
   }
@@ -126,16 +146,18 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
     this.clearTextBox();
     this.clearSelection();
     this.resetDisplayList();
-    this.openDropdown();
+    this.textbox.focus();
   }
 
   clearSelection() {
-    this.currentIndex = -1;
+    this.selectedItem = null;
   }
 
   clearTextBox() {
     this.textbox.value = "";
   }
 
-  resetDisplayList() {}
+  resetDisplayList() {
+    this.displayList = this.items;
+  }
 }
