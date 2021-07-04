@@ -5,12 +5,13 @@ import {
   ElementRef,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   SimpleChange,
   SimpleChanges,
   ViewChild,
 } from "@angular/core";
-import { fromEvent } from "rxjs";
+import { fromEvent, Subscription } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 
 @Component({
@@ -18,7 +19,7 @@ import { debounceTime } from "rxjs/operators";
   templateUrl: "./cdk-dropdown.component.html",
   styleUrls: ["./cdk-dropdown.component.scss"],
 })
-export class CdkDropdownComponent implements OnInit, OnChanges {
+export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
   constructor() {}
 
   @Input()
@@ -52,12 +53,13 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
       this.dropdownWidth = newWidth;
     }
   });
+  private subscription: Subscription;
 
   ngOnInit() {
     this.dropdownWidth = this.overlayOrigin.getBoundingClientRect().width;
     this.resizeObserver.observe(this.overlayOrigin);
 
-    fromEvent(this.textbox, "input")
+    this.subscription = fromEvent(this.textbox, "input")
       .pipe(debounceTime(200))
       .subscribe({
         next: (e: KeyboardEvent) => {
@@ -88,6 +90,7 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
 
   ngOnDestroy() {
     this.resizeObserver.disconnect();
+    this.subscription?.unsubscribe();
   }
 
   get textbox() {
