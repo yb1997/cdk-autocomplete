@@ -1,20 +1,16 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import {OverlayModule} from '@angular/cdk/overlay';
-
+import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import { CdkDropdownComponent } from './components/cdk-dropdown/cdk-dropdown.component';
+import { CdkDropdownModule } from './components/cdk-dropdown/cdk-dropdown.module';
+
 
 @NgModule({
   declarations: [
-    AppComponent,
-    CdkDropdownComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
-    OverlayModule,
-    ScrollingModule
+    CdkDropdownModule
   ],
   providers: [],
   bootstrap: [AppComponent]
