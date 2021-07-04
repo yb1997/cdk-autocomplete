@@ -1,6 +1,6 @@
 import { CdkOverlayOrigin } from "@angular/cdk/overlay";
 import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
-import { UP_ARROW, DOWN_ARROW, ENTER, TAB } from "@angular/cdk/keycodes";
+import { UP_ARROW, DOWN_ARROW, ENTER, TAB, ESCAPE } from "@angular/cdk/keycodes";
 import {
   Component,
   ElementRef,
@@ -87,6 +87,7 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
     this.keyHandlers.set(UP_ARROW, this.onKeyboardNavigation);
     this.keyHandlers.set(DOWN_ARROW, this.onKeyboardNavigation);
     this.keyHandlers.set(TAB, this.onTabPressInOverlay);
+    this.keyHandlers.set(ESCAPE, this.onEscapePressInOverlay);
     this.keyHandlers.set(ENTER, this.onEnterPressInOverlay);
   }
 
@@ -118,11 +119,15 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   isValidKeyPressed(keyPressed: number) {
-    return [UP_ARROW, DOWN_ARROW, ENTER, TAB].some(k => k === keyPressed);
+    return [UP_ARROW, DOWN_ARROW, ENTER, TAB, ESCAPE].some(k => k === keyPressed);
   }
 
   toggleDropdown() {
-    this.isOpen = !this.isOpen;
+    if (!this.isOpen) {
+      this.textbox.focus();
+    } else {
+      this.dismiss();
+    }
     this.highlightedItem = null;
   }
 
@@ -185,6 +190,10 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
     this.dismiss();
   }
 
+  onEscapePressInOverlay(e: KeyboardEvent) {
+    this.dismiss();
+  }
+
   onEnterPressInOverlay(e: KeyboardEvent) {
     const item = this.highlightedItem || this.selectedItem;
     if (item) this.selectItem(item);
@@ -232,5 +241,6 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
 
   dismiss() {
     this.closeDropdown();
+    this.textbox.blur();
   }
 }
