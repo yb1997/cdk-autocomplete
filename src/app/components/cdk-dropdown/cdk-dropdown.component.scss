@@ -8,6 +8,7 @@
   overflow: hidden;
   background-color: white;
   font-size: 1.2rem;
+  user-select: none;
 
   .textbox-wrapper {
     position: relative;
@@ -55,9 +56,10 @@
   cursor: pointer;
   transition: background-color 0.4s;
 
-  &:hover {
-    color: darkblue;
+// order matters for highlighted and selected style declarations, highlighted should be declared first so that selected takes precedence
+  &.highlighted {
     background-color: #ddd;
+    color: darkblue;
   }
 
   &.selected {

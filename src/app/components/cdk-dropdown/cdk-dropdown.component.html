@@ -41,7 +41,9 @@
   >
     <div
       *cdkVirtualFor="let item of displayList; let i = index"
-      [ngClass]="{ selected: item === selectedItem }"
+      [ngClass]="{ selected: item === selectedItem, highlighted: item === highlightedItem }"
+      (mouseenter)="handleListItemMouseEnter(item)"
+      (mouseleave)="handleListItemMouseLeave(item)"
       (click)="handleItemClick($event, item)"
       class="dropdown-item"
     >
