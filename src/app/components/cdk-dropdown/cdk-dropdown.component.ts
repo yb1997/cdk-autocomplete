@@ -54,9 +54,9 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
   private readonly resizeObserver = new ResizeObserver((entries) => {
     // borderBoxSize is instance of ResizeObserverSize in firefox but it's an array of ResizeObserverSize in chromium based browsers
     const boxSize =
-      entries[0].borderBoxSize instanceof ResizeObserverSize
-        ? entries[0].borderBoxSize
-        : entries[0].borderBoxSize[0];
+      Array.isArray(entries[0].borderBoxSize)
+        ? entries[0].borderBoxSize[0]
+        : entries[0].borderBoxSize;
 
     const newWidth = boxSize.inlineSize;
     if (newWidth !== this.dropdownWidth) {
