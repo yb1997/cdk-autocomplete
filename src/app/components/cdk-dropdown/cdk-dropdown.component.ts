@@ -8,7 +8,7 @@ import {
   OnInit,
   SimpleChange,
   SimpleChanges,
-  ViewChild
+  ViewChild,
 } from "@angular/core";
 import { fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
@@ -57,21 +57,19 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
     this.dropdownWidth = this.overlayOrigin.getBoundingClientRect().width;
     this.resizeObserver.observe(this.overlayOrigin);
 
-    fromEvent(this.textbox, "input").pipe(
-      debounceTime(200)
-    ).subscribe({
-      next: (e: KeyboardEvent) => {
-        const inputText = this.textbox.value.toUpperCase();
+    fromEvent(this.textbox, "input")
+      .pipe(debounceTime(200))
+      .subscribe({
+        next: (e: KeyboardEvent) => {
+          const inputText = this.textbox.value.toUpperCase();
 
-        if (inputText === "") {
-          this.resetDisplayList();
-        } else {
-          this.displayList = this.items.filter(
-            item => (item[this.dataKey] as string).toUpperCase().includes(inputText)
+          this.displayList = this.items.filter((item) =>
+            (item[this.dataKey] as string).toUpperCase().includes(inputText)
           );
-        }
-      }
-    })
+
+          this.scrollToTop();
+        },
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -159,5 +157,12 @@ export class CdkDropdownComponent implements OnInit, OnChanges {
 
   resetDisplayList() {
     this.displayList = this.items;
+    setTimeout(() => {
+      this.scrollToTop();
+    });
+  }
+
+  scrollToTop() {
+    this.scrollViewport.scrollTo({ top: 0 });
   }
 }
