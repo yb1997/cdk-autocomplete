@@ -140,10 +140,6 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
     this.textbox.select();
   }
 
-  handleDropdownBlur(e: Event) {
-    //this.isOpen = false;
-  }
-
   handleItemClick(e: MouseEvent, currentItem: any) {
     this.selectItem(currentItem);
   }
