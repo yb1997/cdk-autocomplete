@@ -242,5 +242,9 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
   dismiss() {
     this.closeDropdown();
     this.textbox.blur();
+    this.displayList = this.items;
+    if (this.selectedItem) {
+      this.textbox.value = this.selectedItem[this.dataKey];
+    }
   }
 }
