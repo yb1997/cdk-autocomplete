@@ -148,9 +148,10 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
     this.selectItem(currentItem);
   }
 
-  handleOverlayOutsideClick(e) {
-    //console.log("overlay outside clicked", e);
-    //this.isOpen = false;
+  handleOverlayOutsideClick(e: MouseEvent) {
+    if (!this.overlayOrigin.contains(e.target as HTMLElement)) {
+      this.dismiss();
+    }
   }
 
   handleOverlayKeydown(e: KeyboardEvent) {
