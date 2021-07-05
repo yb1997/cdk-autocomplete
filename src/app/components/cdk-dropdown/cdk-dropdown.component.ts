@@ -14,6 +14,7 @@ import {
 } from "@angular/core";
 import { fromEvent, Subscription } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import { DropdownAnimation } from "./dropdown.anim";
 
 type NavigationKey = typeof UP_ARROW | typeof DOWN_ARROW;
 
@@ -21,6 +22,7 @@ type NavigationKey = typeof UP_ARROW | typeof DOWN_ARROW;
   selector: "cdk-dropdown",
   templateUrl: "./cdk-dropdown.component.html",
   styleUrls: ["./cdk-dropdown.component.scss"],
+  animations: [DropdownAnimation]
 })
 export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
   constructor() {}

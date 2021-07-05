@@ -16,7 +16,11 @@
     </div>
   </div>
   <div class="actions-container">
-    <div [class.rotate]="isOpen" (click)="toggleDropdown()" class="down-icon-container">
+    <div
+      [class.rotate]="isOpen"
+      (click)="toggleDropdown()"
+      class="down-icon-container"
+    >
       <i class="fas fa-caret-down"></i>
     </div>
   </div>
@@ -24,7 +28,6 @@
 
 <ng-template
   cdkConnectedOverlay
-  cdkConnectedOverlayPanelClass="dropdown-panel-class"
   [cdkConnectedOverlayOrigin]="trigger"
   [cdkConnectedOverlayOpen]="isOpen"
   [cdkConnectedOverlayWidth]="dropdownWidth"
@@ -33,23 +36,30 @@
   (overlayKeydown)="handleOverlayKeydown($event)"
   (attach)="handleDropdownOptionsVisible()"
 >
-  <cdk-virtual-scroll-viewport
-    [itemSize]="37"
-    class="dropdown-viewport"
-    [style.height.px]="displayList.length <= 5 ? displayList.length * 37 : 200"
-  >
-    <div
-      *cdkVirtualFor="let item of displayList; let i = index"
-      [ngClass]="{ selected: item === selectedItem, highlighted: item === highlightedItem }"
-      (mouseenter)="handleListItemMouseEnter(item)"
-      (mouseleave)="handleListItemMouseLeave(item)"
-      (click)="handleItemClick($event, item)"
-      class="dropdown-item"
+  <div class="dropdown-panel-class" [@dropdownAnim]="{ params: { duration: '100ms' }, value: null }">
+    <cdk-virtual-scroll-viewport
+      [itemSize]="37"
+      class="dropdown-viewport"
+      [style.height.px]="
+        displayList.length <= 5 ? displayList.length * 37 : 200
+      "
     >
-      <div class="text">
-        {{ item[dataKey] }}
+      <div
+        *cdkVirtualFor="let item of displayList; let i = index"
+        [ngClass]="{
+          selected: item === selectedItem,
+          highlighted: item === highlightedItem
+        }"
+        (mouseenter)="handleListItemMouseEnter(item)"
+        (mouseleave)="handleListItemMouseLeave(item)"
+        (click)="handleItemClick($event, item)"
+        class="dropdown-item"
+      >
+        <div class="text">
+          {{ item[dataKey] }}
+        </div>
+        <div class="icon-container">👍</div>
       </div>
-      <div class="icon-container">👍</div>
-    </div>
-  </cdk-virtual-scroll-viewport>
+    </cdk-virtual-scroll-viewport>
+  </div>
 </ng-template>
