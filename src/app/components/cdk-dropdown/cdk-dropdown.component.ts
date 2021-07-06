@@ -1,6 +1,12 @@
 import { CdkOverlayOrigin } from "@angular/cdk/overlay";
 import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
-import { UP_ARROW, DOWN_ARROW, ENTER, TAB, ESCAPE } from "@angular/cdk/keycodes";
+import {
+  UP_ARROW,
+  DOWN_ARROW,
+  ENTER,
+  TAB,
+  ESCAPE,
+} from "@angular/cdk/keycodes";
 import {
   Component,
   ElementRef,
@@ -22,7 +28,7 @@ type NavigationKey = typeof UP_ARROW | typeof DOWN_ARROW;
   selector: "cdk-dropdown",
   templateUrl: "./cdk-dropdown.component.html",
   styleUrls: ["./cdk-dropdown.component.scss"],
-  animations: [DropdownAnimation]
+  animations: [DropdownAnimation],
 })
 export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
   constructor() {}
@@ -55,10 +61,9 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
   displayList = [];
   private readonly resizeObserver = new ResizeObserver((entries) => {
     // borderBoxSize is instance of ResizeObserverSize in firefox but it's an array of ResizeObserverSize in chromium based browsers
-    const boxSize =
-      Array.isArray(entries[0].borderBoxSize)
-        ? entries[0].borderBoxSize[0]
-        : entries[0].borderBoxSize;
+    const boxSize = Array.isArray(entries[0].borderBoxSize)
+      ? entries[0].borderBoxSize[0]
+      : entries[0].borderBoxSize;
 
     const newWidth = boxSize.inlineSize;
     if (newWidth !== this.dropdownWidth) {
@@ -121,7 +126,9 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   isValidKeyPressed(keyPressed: number) {
-    return [UP_ARROW, DOWN_ARROW, ENTER, TAB, ESCAPE].some(k => k === keyPressed);
+    return [UP_ARROW, DOWN_ARROW, ENTER, TAB, ESCAPE].some(
+      (k) => k === keyPressed
+    );
   }
 
   toggleDropdown() {
@@ -201,10 +208,27 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
   onKeyboardNavigation(e: KeyboardEvent) {
     const keyPressed = e.keyCode as NavigationKey;
     const item = this.highlightedItem || this.selectedItem;
-    const offset = keyPressed === DOWN_ARROW ? 1 : -1;
-    const newIndex = this.displayList.indexOf(item) + offset;
-    const newHightlightedItem = this.displayList[newIndex];
+    const newIndex = this.calculateNewIndex(item, keyPressed === DOWN_ARROW ? 1 : -1);
+    this.highlightItem(newIndex);
+    this.scrollItemIntoView(newIndex);
+  }
+
+  calculateNewIndex(currItem, offset: 1 | -1) {
+    return this.displayList.indexOf(currItem) + offset;
+  }
+
+  highlightItem(index) {
+    const newHightlightedItem = this.displayList[index];
     this.highlightedItem = newHightlightedItem;
+  }
+
+  scrollItemIntoView(itemIndex: number) {
+    if (itemIndex < 0 || itemIndex >= this.displayList.length) return;
+
+    const el = this.scrollViewport.elementRef.nativeElement.querySelector(
+      `[data-item-id='${itemIndex}']`
+    );
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   selectItem(newItem) {

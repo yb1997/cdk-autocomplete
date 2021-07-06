@@ -54,6 +54,7 @@
         (mouseleave)="handleListItemMouseLeave(item)"
         (click)="handleItemClick($event, item)"
         class="dropdown-item"
+        attr.data-item-id="{{i}}"
       >
         <div class="text">
           {{ item[dataKey] }}
