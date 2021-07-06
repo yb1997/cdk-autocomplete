@@ -228,7 +228,7 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
     const el = this.scrollViewport.elementRef.nativeElement.querySelector(
       `[data-item-id='${itemIndex}']`
     );
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    el?.scrollIntoView({ block: "nearest" });
   }
 
   selectItem(newItem) {
