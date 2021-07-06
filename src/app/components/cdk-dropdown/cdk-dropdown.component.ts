@@ -6,6 +6,7 @@ import {
   ENTER,
   TAB,
   ESCAPE,
+  P,
 } from "@angular/cdk/keycodes";
 import {
   Component,
@@ -44,6 +45,9 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input()
   placeholder = "";
+
+  @Input()
+  defaultValue;
 
   @ViewChild("textbox", { static: true })
   textboxRef: ElementRef<HTMLInputElement>;
@@ -102,12 +106,8 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
     for (let prop in changes) {
       const propChange = changes[prop] as SimpleChange;
 
-      if (propChange.currentValue !== propChange.previousValue) {
-        this[prop] = propChange.currentValue;
-
-        if (prop === "items") {
-          this.displayList = this.items;
-        }
+      if (prop === "items") {
+        this.displayList = this.items;
       }
     }
   }
@@ -186,10 +186,31 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
 
   handleClearIconClick(e: MouseEvent) {
     e.stopPropagation();
-    this.clearTextBox();
-    this.clearSelection();
+
+    // maybe create a value reader so that dropdown can support list of ints, strings, and objects
+    const defaultItem = this.defaultValue && this.items.find(i => i[this.dataKey] === this.defaultValue[this.dataKey]);
+
+    if (defaultItem) {
+      this.selectItem(defaultItem);
+    } else {
+      this.clearSelection();
+    }
+
+    this.closeDropdown();
+  }
+
+  clearSelection() {
+    this.selectedItem = null;
     this.resetDisplayList();
-    this.textbox.focus();
+    this.clearTextBox();
+  }
+
+  clearTextBox() {
+    this.textbox.value = "";
+  }
+
+  resetDisplayList() {
+    this.displayList = this.items;
   }
 
   onTabPressInOverlay(e: KeyboardEvent) {
@@ -238,23 +259,10 @@ export class CdkDropdownComponent implements OnInit, OnChanges, OnDestroy {
     this.textbox.blur();
   }
 
-  clearSelection() {
-    this.selectedItem = null;
-  }
-
-  clearTextBox() {
-    this.textbox.value = "";
-  }
-
-  resetDisplayList() {
-    this.displayList = this.items;
-    setTimeout(() => {
-      this.scrollToTop();
-    });
-  }
-
   scrollToTop() {
-    this.scrollViewport.scrollTo({ top: 0 });
+    setTimeout(() => {
+      this.scrollViewport.scrollTo({ top: 0 });
+    });
   }
 
   closeDropdown() {
